@@ -57,7 +57,7 @@ public class PingApplication extends Application {
 	private double	lastPing = 0;
 	private double	interval = 200;
 	private boolean passive = false;
-	private int		seed = 5;
+	private int		seed = 10;
 	private int		destMin=0;
 	private int		destMax=1;
 	private int		pingSize=1;
@@ -146,6 +146,10 @@ public class PingApplication extends Application {
 		if (type==null)
 				return msg; // Not a ping/pong message
 
+		if(msg.getTo()==host&&type.equalsIgnoreCase("pong"){
+			DataManage(host,msg);
+			return msg;
+		}
 		// Respond with pong if we're the recipient
 		if (msg.getTo()==host && type.equalsIgnoreCase("gototest")) {
 			//String id = "pong" + SimClock.getIntTime() + "-" +
@@ -153,6 +157,9 @@ public class PingApplication extends Application {
 			//Message m = new Message(host, msg.getFrom(), id, getPongSize());
 			//m.addProperty("type", "pong");
 			System.out.println(host+"は"+msg.getFrom()+"からgototestを受信。 時間："+SimClock.getIntTime());
+			Message m= new Message(host,msg.getFrom(),"gotoreturn",data.size());//メッセージを受け取ったら、送信元に報告
+			m.addProperty("type","pong");
+			host.createNewMessage(m);
 			//m.setAppID(APP_ID);
 			//host.createNewMessage(m);
 
@@ -160,6 +167,7 @@ public class PingApplication extends Application {
 			super.sendEventToListeners("GotPing", null, host);
 			super.sendEventToListeners("SentPong", null, host);
 		}
+		
 
 		// Received a pong reply
 		//if (msg.getTo()==host && type.equalsIgnoreCase("pong")) {
