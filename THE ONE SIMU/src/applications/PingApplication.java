@@ -22,6 +22,7 @@ import core.SimScenario;
 import core.World;
 import java.util.List;
 import java.util.ArrayList;
+import applications.DataManager;
 /**
  * Simple ping application to demonstrate the application support. The
  * application can be configured to send pings with a fixed interval or to only
@@ -138,28 +139,36 @@ public class PingApplication extends Application {
 		this.sharenode.add(host.toString());
 		share=(double)sharenode.size()/(double)125;
 
-		 System.out.println("データの送り先:"+msg.getTo()+" 受け取ったホスト:"+host+" 受け取った時間:"+SimClock.getIntTime()
-		 +"　共有率"+share+"%"+sharenode);
 		String type = (String)msg.getProperty("type");//どのノードでも作成した情報を自分が持てばこの操作に行きつく。
-		//System.out.println(host+"が"+msg.getFrom()+"からgototestを受け取りました。");
-
+		 System.out.print("データの送り先:"+msg.getTo()+" 受け取ったホスト:"+host+
+				 " 受け取った時間:"+SimClock.getIntTime());
+		
+		//Message m= new Message(host,msg.getFrom(),"gotoreturn",data.size());//メッセージを受け取ったら、送信元に報告
+		//m.addProperty("type","pong");
+		
+		//host.createNewMessage(m);
+		DataManager.Management(host,msg);
+		
 		if (type==null)
 				return msg; // Not a ping/pong message
 
-		if(msg.getTo()==host&&type.equalsIgnoreCase("pong"){
-			DataManage(host,msg);
+		if(msg.getTo()==host&&type.equalsIgnoreCase("pong")){
+			
+			System.out.println(msg.getTo()+"より報告確認");
+			DataManager.Management(host,msg);
 			return msg;
 		}
 		// Respond with pong if we're the recipient
 		if (msg.getTo()==host && type.equalsIgnoreCase("gototest")) {
+			
 			//String id = "pong" + SimClock.getIntTime() + "-" +
 			//	host.getAddress();
 			//Message m = new Message(host, msg.getFrom(), id, getPongSize());
 			//m.addProperty("type", "pong");
+			
 			System.out.println(host+"は"+msg.getFrom()+"からgototestを受信。 時間："+SimClock.getIntTime());
-			Message m= new Message(host,msg.getFrom(),"gotoreturn",data.size());//メッセージを受け取ったら、送信元に報告
-			m.addProperty("type","pong");
-			host.createNewMessage(m);
+			
+			
 			//m.setAppID(APP_ID);
 			//host.createNewMessage(m);
 
