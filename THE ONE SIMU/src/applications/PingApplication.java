@@ -65,9 +65,10 @@ public class PingApplication extends Application {
 	private int		pongSize=1;
 	private Random	rng;
 	private int i=0;
-	private List<String> sharenode =new ArrayList<String>();
-	private List<String> data =new ArrayList<String>();
-	private double share;
+	//private List<String> sharenode =new ArrayList<String>();
+	private List<String> data =new ArrayList<>();
+	
+	//private double share;
 
    // private int share;
 	/**
@@ -136,39 +137,43 @@ public class PingApplication extends Application {
 			this.sharenode.add(host.toString());
 			//System.out.println(this.sharenode);
 		}*/
-		this.sharenode.add(host.toString());
-		share=(double)sharenode.size()/(double)125;
+
+		//this.sharenode.add(host.toString());
+		//share=(double)sharenode.size()/(double)125;
 
 		String type = (String)msg.getProperty("type");//どのノードでも作成した情報を自分が持てばこの操作に行きつく。
-		 System.out.print("データの送り先:"+msg.getTo()+" 受け取ったホスト:"+host+
+		System.out.print("データの送り先:"+msg.getTo()+" 受け取ったホスト:"+host+
 				 " 受け取った時間:"+SimClock.getIntTime());
-		
+
+	//メッセージを受け取った発信者に報告し、そこから共有率を計算しようと考えた。
 		//Message m= new Message(host,msg.getFrom(),"gotoreturn",data.size());//メッセージを受け取ったら、送信元に報告
 		//m.addProperty("type","pong");
-		
 		//host.createNewMessage(m);
 		DataManager.Management(host,msg);
-		
+
 		if (type==null)
 				return msg; // Not a ping/pong message
 
 		if(msg.getTo()==host&&type.equalsIgnoreCase("pong")){
-			
+
 			System.out.println(msg.getTo()+"より報告確認");
 			DataManager.Management(host,msg);
 			return msg;
 		}
 		// Respond with pong if we're the recipient
 		if (msg.getTo()==host && type.equalsIgnoreCase("gototest")) {
-			
+
 			//String id = "pong" + SimClock.getIntTime() + "-" +
 			//	host.getAddress();
 			//Message m = new Message(host, msg.getFrom(), id, getPongSize());
 			//m.addProperty("type", "pong");
-			
-			System.out.println(host+"は"+msg.getFrom()+"からgototestを受信。 時間："+SimClock.getIntTime());
-			
-			
+
+			System.out.println(host+"は"+msg.getFrom()+"からgototestを受信。 時間："
+			+SimClock.getIntTime()+"秒"+"　データの大きさ:"+msg.size+
+			"スループット:"+(double)msg.size/(double)SimClock.getIntTime());
+
+
+
 			//m.setAppID(APP_ID);
 			//host.createNewMessage(m);
 
@@ -176,7 +181,7 @@ public class PingApplication extends Application {
 			super.sendEventToListeners("GotPing", null, host);
 			super.sendEventToListeners("SentPong", null, host);
 		}
-		
+
 
 		// Received a pong reply
 		//if (msg.getTo()==host && type.equalsIgnoreCase("pong")) {
@@ -234,20 +239,26 @@ public class PingApplication extends Application {
 	public void DataSend(DTNHost host) {
 
 
-
+      //ソースノードをアドレス0のホストに変換
 		int srsaddrs=0;
 		World w = SimScenario.getInstance().getWorld();
+
 		if(host.address==srsaddrs&&i==0) {
-		Message m = new Message(host, randomHost(), "gototest",data.size());
+		
+		
+		Message m = new Message(host, randomHost(), "gototest",getIntByte(data));
 				/*+SimClock.getIntTime() + "-" + w.getNodeByAddress(srsaddrs).getAddress()*/
 		//System.out.println(randomHost().address);
 
 		m.addProperty("type", "gototest");
+		m.addProperty("contents", data);
 		m.setAppID(APP_ID);
 
-		System.out.println(host+"はデータを"+m.getTo()+"あてに送りました。時間は"+SimClock.getIntTime()+"　サイズ："+data.size());
-
+		System.out.println(host+"はデータを"+m.getTo()+"あてに送りました。時間は"+SimClock.getIntTime()+"秒"+
+				"　サイズ："+getIntByte(data)+"Bytes");
+		
 		host.createNewMessage(m);
+		
 		i++;
 
 		// Call listeners
@@ -375,6 +386,17 @@ public class PingApplication extends Application {
 	 */
 	public void setPingSize(int pingSize) {
 		this.pingSize = pingSize;
+
+	}
+
+	public int getIntByte(List<String> data) {
+
+		int s=0;
+		String str=String.join(",", data).replace(",", "");
+		for(int n=1;n<=str.length();n++) {
+			s+=8;
+		}
+		return s;
 	}
 
 }
