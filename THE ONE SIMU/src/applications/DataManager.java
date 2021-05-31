@@ -12,22 +12,22 @@ import java.util.List;
 import java.util.ArrayList;
 
 /**
- * Šeƒm[ƒh‚ªóM‚µ‚½ƒƒbƒZ[ƒW‚ğ•ÛŠÇ‚µA‹¤—L—¦‚ğŒvZ‚·‚éB
+ *å„ãƒãƒ¼ãƒ‰ãŒå—ä¿¡ã—ãŸãƒ¡ãƒƒã‚»ãƒ¼ã‚¸ã‚’ä¿ç®¡ã—ã€å…±æœ‰ç‡ã‚’è¨ˆç®—ã™ã‚‹ã€‚
  * 
- * @author ‚²‚Â
+ * @author gotsu
  * @param host & msg
  * @return msg
  */
 public class DataManager {
 	
-	public static List<String> MsgHostData=new ArrayList<String>();//ó‚¯æ‚Á‚½ƒƒbƒZ[ƒW‚Ì”­MÒƒŠƒXƒg
+	public static List<String> MsgHostData=new ArrayList<String>();//ï¿½ï¿½Mï¿½Òƒzï¿½Xï¿½gï¿½Ìƒï¿½ï¿½Xï¿½g
 	
 	public static Message Management(DTNHost host,Message msg) {
-	 double share;
+	 double share;//å…±æœ‰ç‡
 	
 		MsgHostData.add(host.toString());
-		share=(double)MsgHostData.size()*(double)100/(double)125;
-		System.out.println(" ‹¤—L—¦:"+share+"%");
+		share=(double)MsgHostData.size()*(double)100/(double)125;//ï¿½ï¿½ï¿½Xï¿½gï¿½ï¿½Stringï¿½É•ÏŠï¿½ï¿½Aï¿½ï¿½","ï¿½ï¿½ï¿½íœï¿½B
+		System.out.println("å…±æœ‰ç‡:"+share+"%");
 		
 		return msg;
 	}

@@ -58,7 +58,7 @@ public class PingApplication extends Application {
 	private double	lastPing = 0;
 	private double	interval = 200;
 	private boolean passive = false;
-	private int		seed = 10;
+	private int		seed = 5;
 	private int		destMin=0;
 	private int		destMax=1;
 	private int		pingSize=1;
@@ -141,12 +141,12 @@ public class PingApplication extends Application {
 		//this.sharenode.add(host.toString());
 		//share=(double)sharenode.size()/(double)125;
 
-		String type = (String)msg.getProperty("type");//‚Ç‚Ìƒm[ƒh‚Å‚àì¬‚µ‚½î•ñ‚ğ©•ª‚ª‚Ä‚Î‚±‚Ì‘€ì‚És‚«‚Â‚­B
-		System.out.print("ƒf[ƒ^‚Ì‘—‚èæ:"+msg.getTo()+" ó‚¯æ‚Á‚½ƒzƒXƒg:"+host+
-				 " ó‚¯æ‚Á‚½ŠÔ:"+SimClock.getIntTime());
+		String type = (String)msg.getProperty("type");
+		System.out.print("ç›®çš„ãƒãƒ¼ãƒ‰:"+msg.getTo()+"å—ä¿¡ãƒãƒ¼ãƒ‰:"+host+
+				 "æ™‚é–“:"+SimClock.getIntTime());
 
-	//ƒƒbƒZ[ƒW‚ğó‚¯æ‚Á‚½”­MÒ‚É•ñ‚µA‚»‚±‚©‚ç‹¤—L—¦‚ğŒvZ‚µ‚æ‚¤‚Æl‚¦‚½B
-		//Message m= new Message(host,msg.getFrom(),"gotoreturn",data.size());//ƒƒbƒZ[ƒW‚ğó‚¯æ‚Á‚½‚çA‘—MŒ³‚É•ñ
+	//ï¿½ï¿½ï¿½bï¿½Zï¿½[ï¿½Wï¿½ï¿½ï¿½ó‚¯ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Mï¿½Ò‚É•ñ‚ï¿½ï¿½Aï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ç‹¤ï¿½Lï¿½ï¿½ï¿½ï¿½ï¿½vï¿½Zï¿½ï¿½ï¿½æ‚¤ï¿½Ælï¿½ï¿½ï¿½ï¿½ï¿½B
+		//Message m= new Message(host,msg.getFrom(),"gotoreturn",data.size());//ï¿½ï¿½ï¿½bï¿½Zï¿½[ï¿½Wï¿½ï¿½ï¿½ó‚¯ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Aï¿½ï¿½ï¿½Mï¿½ï¿½ï¿½É•ï¿½
 		//m.addProperty("type","pong");
 		//host.createNewMessage(m);
 		DataManager.Management(host,msg);
@@ -156,7 +156,7 @@ public class PingApplication extends Application {
 
 		if(msg.getTo()==host&&type.equalsIgnoreCase("pong")){
 
-			System.out.println(msg.getTo()+"‚æ‚è•ñŠm”F");
+			System.out.println(msg.getTo()+"");
 			DataManager.Management(host,msg);
 			return msg;
 		}
@@ -168,9 +168,9 @@ public class PingApplication extends Application {
 			//Message m = new Message(host, msg.getFrom(), id, getPongSize());
 			//m.addProperty("type", "pong");
 
-			System.out.println(host+"‚Í"+msg.getFrom()+"‚©‚çgototest‚ğóMB ŠÔF"
-			+SimClock.getIntTime()+"•b"+"@ƒf[ƒ^‚Ì‘å‚«‚³:"+msg.size+
-			"ƒXƒ‹[ƒvƒbƒg:"+(double)msg.size/(double)SimClock.getIntTime());
+			System.out.println(host+"ã¯"+msg.getFrom()+"ã‹ã‚‰gototestã‚’å—ä¿¡ã€‚ã€€æ™‚é–“ :"+
+			+SimClock.getIntTime()+"ãƒ‡ãƒ¼ã‚¿ã®ãŠãŠãã•"+msg.size+
+			"ã‚¹ãƒ«ãƒ¼ãƒ—ãƒƒãƒˆ:"+(double)msg.size/(double)SimClock.getIntTime());
 
 
 
@@ -185,7 +185,7 @@ public class PingApplication extends Application {
 
 		// Received a pong reply
 		//if (msg.getTo()==host && type.equalsIgnoreCase("pong")) {
-			//System.out.println(host+"‚Í"+msg.getFrom()+"‚©‚çpong‚ğóM");
+			//System.out.println(host+"ï¿½ï¿½"+msg.getFrom()+"ï¿½ï¿½ï¿½ï¿½pongï¿½ï¿½ï¿½ï¿½M");
 			// Send event to listeners
 			//super.sendEventToListeners("GotPong", null, host);
 		//}
@@ -205,7 +205,7 @@ public class PingApplication extends Application {
 		}
 		destaddr = destMin + rng.nextInt(destMax - destMin);
 		World w = SimScenario.getInstance().getWorld();
-		//System.out.println(destaddr+"•ÏŠ·"+w.getNodeByAddress(destaddr));
+		//System.out.println(destaddr+"ï¿½ÏŠï¿½"+w.getNodeByAddress(destaddr));
 
 		return w.getNodeByAddress(destaddr);
 	}
@@ -239,7 +239,7 @@ public class PingApplication extends Application {
 	public void DataSend(DTNHost host) {
 
 
-      //ƒ\[ƒXƒm[ƒh‚ğƒAƒhƒŒƒX0‚ÌƒzƒXƒg‚É•ÏŠ·
+      //ï¿½\ï¿½[ï¿½Xï¿½mï¿½[ï¿½hï¿½ï¿½ï¿½Aï¿½hï¿½ï¿½ï¿½X0ï¿½Ìƒzï¿½Xï¿½gï¿½É•ÏŠï¿½
 		int srsaddrs=0;
 		World w = SimScenario.getInstance().getWorld();
 
@@ -254,8 +254,8 @@ public class PingApplication extends Application {
 		m.addProperty("contents", data);
 		m.setAppID(APP_ID);
 
-		System.out.println(host+"‚Íƒf[ƒ^‚ğ"+m.getTo()+"‚ ‚Ä‚É‘—‚è‚Ü‚µ‚½BŠÔ‚Í"+SimClock.getIntTime()+"•b"+
-				"@ƒTƒCƒYF"+getIntByte(data)+"Bytes");
+		System.out.println(host+"ï¿½ã¯ãƒ‡ãƒ¼ã‚¿ã‚’"+m.getTo()+"ã‚ã¦ã«é€ã‚Šã¾ã—ãŸã€‚ã€€æ™‚é–“ã¯:"+SimClock.getIntTime()+"ï¿½b"+
+				"ãƒ‡ãƒ¼ã‚¿ã®å¤§ãã•ï¼š"+getIntByte(data)+"Bytes");
 		
 		host.createNewMessage(m);
 		
@@ -389,13 +389,19 @@ public class PingApplication extends Application {
 
 	}
 
+	/**
+	 * ãƒ‡ãƒ¼ã‚¿ã®å¤§ãã•(bytes)ã‚’è¨ˆç®—ã™ã‚‹
+	 * 
+	 * @param Stringé…åˆ—
+	 * @returnã€€ãƒã‚¤ãƒˆæ•°
+	 */
 	public int getIntByte(List<String> data) {
 
 		int s=0;
-		String str=String.join(",", data).replace(",", "");
-		for(int n=1;n<=str.length();n++) {
-			s+=8;
-		}
+	//Stringé…åˆ—ã‚’Stringã«å¤‰æ›ã—ã€å¾Œã«","ã‚’å‰Šé™¤ã€‚
+		String str=String.join(",", data).replace(",", "");//ï¿½ï¿½ï¿½Xï¿½gï¿½ï¿½Stringï¿½É•ÏŠï¿½ï¿½Aï¿½ï¿½","ï¿½ï¿½ï¿½íœï¿½B
+		for(int n=1;n<=str.length();n++) 
+			s+=8;	
 		return s;
 	}
 
