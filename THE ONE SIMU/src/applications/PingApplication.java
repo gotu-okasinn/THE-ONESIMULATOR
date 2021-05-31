@@ -60,7 +60,7 @@ public class PingApplication extends Application {
 	private boolean passive = false;
 	private int		seed = 5;
 	private int		destMin=0;
-	private int		destMax=1;
+	public static int		destMax=1;
 	private int		pingSize=1;
 	private int		pongSize=1;
 	private Random	rng;
@@ -142,11 +142,11 @@ public class PingApplication extends Application {
 		//share=(double)sharenode.size()/(double)125;
 
 		String type = (String)msg.getProperty("type");
-		System.out.print("目的ノード:"+msg.getTo()+"受信ノード:"+host+
-				 "時間:"+SimClock.getIntTime());
+		System.out.print("目的ノード:"+msg.getTo()+" 受信ノード:"+host+
+				 "  時間:"+SimClock.getIntTime());
 
 	//���b�Z�[�W���󂯎�������M�҂ɕ񍐂��A�������狤�L�����v�Z���悤�ƍl�����B
-		//Message m= new Message(host,msg.getFrom(),"gotoreturn",data.size());//���b�Z�[�W���󂯎������A���M���ɕ�
+		//Message m= new Message(host,msg.getFrom(),"gotoreturn",data.size());
 		//m.addProperty("type","pong");
 		//host.createNewMessage(m);
 		DataManager.Management(host,msg);
@@ -169,8 +169,8 @@ public class PingApplication extends Application {
 			//m.addProperty("type", "pong");
 
 			System.out.println(host+"は"+msg.getFrom()+"からgototestを受信。　時間 :"+
-			+SimClock.getIntTime()+"データのおおきさ"+msg.size+
-			"スループット:"+(double)msg.size/(double)SimClock.getIntTime());
+			+SimClock.getIntTime()+" データの大きさ:"+msg.size+
+			" スループット:"+(double)msg.size/(double)SimClock.getIntTime());
 
 
 
@@ -239,13 +239,13 @@ public class PingApplication extends Application {
 	public void DataSend(DTNHost host) {
 
 
-      //�\�[�X�m�[�h���A�h���X0�̃z�X�g�ɕϊ�
+      //ソースホストをアドレス０のノードに限定
 		int srsaddrs=0;
 		World w = SimScenario.getInstance().getWorld();
 
 		if(host.address==srsaddrs&&i==0) {
 		
-		
+		data.add("aaaaaaa");
 		Message m = new Message(host, randomHost(), "gototest",getIntByte(data));
 				/*+SimClock.getIntTime() + "-" + w.getNodeByAddress(srsaddrs).getAddress()*/
 		//System.out.println(randomHost().address);
@@ -254,8 +254,9 @@ public class PingApplication extends Application {
 		m.addProperty("contents", data);
 		m.setAppID(APP_ID);
 
-		System.out.println(host+"�はデータを"+m.getTo()+"あてに送りました。　時間は:"+SimClock.getIntTime()+"�b"+
-				"データの大きさ："+getIntByte(data)+"Bytes");
+		
+		System.out.println(host+"はデータを"+m.getTo()+"あてに送りました。時間は:"+SimClock.getIntTime()+"秒"+
+				"　データの大きさ："+getIntByte(data)+"Bytes");
 		
 		host.createNewMessage(m);
 		
@@ -399,7 +400,7 @@ public class PingApplication extends Application {
 
 		int s=0;
 	//String配列をStringに変換し、後に","を削除。
-		String str=String.join(",", data).replace(",", "");//���X�g��String�ɕϊ��A��","���폜�B
+		String str=String.join(",", data).replace(",", "");
 		for(int n=1;n<=str.length();n++) 
 			s+=8;	
 		return s;
