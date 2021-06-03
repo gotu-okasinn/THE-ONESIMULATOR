@@ -145,7 +145,6 @@ public class PingApplication extends Application {
 		System.out.print("目的ノード:"+msg.getTo()+" 受信ノード:"+host+
 				 "  時間:"+SimClock.getIntTime());
 
-	//���b�Z�[�W���󂯎�������M�҂ɕ񍐂��A�������狤�L�����v�Z���悤�ƍl�����B
 		//Message m= new Message(host,msg.getFrom(),"gotoreturn",data.size());
 		//m.addProperty("type","pong");
 		//host.createNewMessage(m);
@@ -168,9 +167,9 @@ public class PingApplication extends Application {
 			//Message m = new Message(host, msg.getFrom(), id, getPongSize());
 			//m.addProperty("type", "pong");
 
-			System.out.println(host+"は"+msg.getFrom()+"からgototestを受信。　時間 :"+
-			+SimClock.getIntTime()+"データのおおきさ"+msg.size+
-			"スループット:"+(double)msg.size/(double)SimClock.getIntTime()+"(Bytes/second)");
+			System.out.println(host+"は"+msg.getFrom()+"からgototestを受信。　 時間 :"+
+			+SimClock.getIntTime()+" データのサイズ :"+msg.size+
+			"  スループット:"+(double)msg.size/(double)SimClock.getIntTime()+"(Bytes/second)");
 
 
 
@@ -183,12 +182,12 @@ public class PingApplication extends Application {
 		}
 
 
-		// Received a pong reply
-		//if (msg.getTo()==host && type.equalsIgnoreCase("pong")) {
-			//System.out.println(host+"��"+msg.getFrom()+"����pong����M");
-			// Send event to listeners
-			//super.sendEventToListeners("GotPong", null, host);
-		//}
+		// pongを受けたとき
+		/*if (msg.getTo()==host && type.equalsIgnoreCase("pong")) {
+			System.out.println(host+"��"+msg.getFrom()+"����pong����M");
+			 Send event to listeners
+			super.sendEventToListeners("GotPong", null, host);
+		}*/
 
 		return msg;
 	}
@@ -205,7 +204,6 @@ public class PingApplication extends Application {
 		}
 		destaddr = destMin + rng.nextInt(destMax - destMin);
 		World w = SimScenario.getInstance().getWorld();
-		//System.out.println(destaddr+"�ϊ�"+w.getNodeByAddress(destaddr));
 
 		return w.getNodeByAddress(destaddr);
 	}
@@ -226,12 +224,11 @@ public class PingApplication extends Application {
 
 		 double curTime = SimClock.getTime();
 		if (curTime - this.lastPing >= this.interval) {
-
+				//データを送信準備のメソッド
 				this.DataSend(host);
 
-			// Call listeners
+			// リスナに知らせる。
 			super.sendEventToListeners("SentPing", null, host);
-
 			this.lastPing = curTime;
 		}
 	}
@@ -246,7 +243,7 @@ public class PingApplication extends Application {
 		if(host.address==srsaddrs&&i==0) {
 
 
-		data.add("ああああｄｓだｄｓｓ");
+		data.add("私は後藤大きです。");
 
 		Message m = new Message(host, randomHost(), "gototest",getIntByte(data));
 				/*+SimClock.getIntTime() + "-" + w.getNodeByAddress(srsaddrs).getAddress()*/
@@ -403,8 +400,10 @@ public class PingApplication extends Application {
 		int s=0;
 	//String配列をStringに変換し、後に","を削除。
 		String str=String.join(",", data).replace(",", "");
+		//一文字につき、８bit加算（文字分類機能なし）
 		for(int n=1;n<=str.length();n++)
 			s+=8;
+		
 		return s;
 	}
 
