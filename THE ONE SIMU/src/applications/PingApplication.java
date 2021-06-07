@@ -169,7 +169,7 @@ public class PingApplication extends Application {
 
 			System.out.println(host+"は"+msg.getFrom()+"からgototestを受信。　 時間 :"+
 			+SimClock.getIntTime()+" データのサイズ :"+msg.size+
-			"  スループット:"+(double)msg.size/(double)SimClock.getIntTime()+"(Bytes/second)");
+			"  スループット:"+(double)msg.size/(double)SimClock.getIntTime()+"(kbps)");
 
 
 
@@ -245,7 +245,7 @@ public class PingApplication extends Application {
 
 		data.add("私は後藤大きです。");
 
-		Message m = new Message(host, randomHost(), "gototest",getIntByte(data));
+		Message m = new Message(host, randomHost(), "gototest",getPingSize());
 				/*+SimClock.getIntTime() + "-" + w.getNodeByAddress(srsaddrs).getAddress()*/
 		//System.out.println(randomHost().address);
 
@@ -255,7 +255,7 @@ public class PingApplication extends Application {
 
 
 		System.out.println(host+"はデータを"+m.getTo()+"あてに送りました。時間は:"+SimClock.getIntTime()+"秒"+
-				"　データの大きさ："+getIntByte(data)+"Bytes");
+				"　データの大きさ："+m.size+"kbytes");
 
 		host.createNewMessage(m);
 
