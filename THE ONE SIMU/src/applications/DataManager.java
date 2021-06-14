@@ -28,29 +28,32 @@ public class DataManager {
 	 * @return msg
 	 */
 	public static Message Management(DTNHost host,Message msg) {
-	 double share;//共有率
-	
-	   
-		MsgHostData.add(host.toString());
-		share=(double)MsgHostData.size()*(double)100/(double)(PingApplication.destMax);
-		System.out.println("　共有率:"+share+"%");
+	   double share;//共有率
+	   if(!(MsgHostData.contains(host.toString()))){
+		   MsgHostData.add(host.toString());
+		   share=(double)MsgHostData.size()*(double)100/(double)(PingApplication.destMax);
+		   try {
+			   FileWriter fw = new FileWriter("result/share.txt",true);
+					//テキストファイルに２列で表示するためにStringBufferを形成後に結合
+			   StringBuilder sb =new StringBuilder(String.valueOf(SimClock.getIntTime()));
+			   sb.append("     "+share);
 		
-		
-		try {
-			FileWriter fw = new FileWriter("result/share.txt",true);
-				//テキストファイルに２列で表示するためにStringBufferを形成後に結合
-			StringBuilder sb =new StringBuilder(String.valueOf(SimClock.getIntTime()));
-		   sb.append("     "+share);
-		
-		   		//Stringに変換し、書き込み
-			fw.write(sb.toString());
-			fw.write("\n");
-			fw.close();
+		   			//Stringに変換し、書き込み
+			   fw.write(sb.toString());
+			   fw.write("\n");
+			   fw.close();
 			
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+		   } catch (IOException e) {
+			   // TODO Auto-generated catch block
+			   e.printStackTrace();
+		   }
+		   
+		  
+	    } 
+	   
+	   share=(double)MsgHostData.size()*(double)100/(double)(PingApplication.destMax);
+	   System.out.println("　共有率:"+share+"%");
+	   
 		return msg;
 		
 	}

@@ -21,6 +21,8 @@ import core.SimClock;
 import core.SimScenario;
 import core.World;
 import java.util.List;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.ArrayList;
 import applications.DataManager;
 /**
@@ -58,7 +60,7 @@ public class PingApplication extends Application {
 	private double	lastPing = 0;
 	private double	interval = 200;
 	private boolean passive = false;
-	private int		seed = 5;
+	private int		seed = 9;
 	private int		destMin=0;
 	public static int		destMax=1;
 	private int		pingSize=1;
@@ -169,7 +171,22 @@ public class PingApplication extends Application {
 
 			System.out.println(host+"は"+msg.getFrom()+"からgototestを受信。　 時間 :"+
 			+SimClock.getIntTime()+" データのサイズ :"+msg.size+
-			"  スループット:"+(double)msg.size/(double)SimClock.getIntTime()+"(kbps)");
+			"  スループット:"+(double)msg.size/(double)(SimClock.getIntTime()-interval)+"(kbps)");
+			
+			try {
+				   FileWriter fw = new FileWriter("result/wave-slowput.txt",true);
+						//テキストファイルに２列で表示するためにStringBufferを形成後に結合
+				   fw.write(
+						   String.valueOf((double)msg.size/(double)(SimClock.getIntTime()-interval))
+						   );
+				          fw.write("\n");
+
+				   fw.close();
+				
+			   } catch (IOException e) {
+				   // TODO Auto-generated catch block
+				   e.printStackTrace();
+			   }
 
 
 
@@ -241,7 +258,6 @@ public class PingApplication extends Application {
 		World w = SimScenario.getInstance().getWorld();
 
 		if(host.address==srsaddrs&&i==0) {
-
 
 		data.add("私は後藤大きです。");
 
