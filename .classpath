@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<classpath>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-1.8">
+		<attributes>
+			<attribute name="module" value="true"/>
+		</attributes>
+	</classpathentry>
+	<classpathentry excluding="movement/ExternalMovement.java|movement/GridLocation.java|movement/RandomDirection.java|movement/ModifiedRandomDirection.java|movement/WorkingDayMovement.java|movement/RandomWalk.java|movement/ExternalPathMovement.java|movement/LinearMovement.java|movement/LinearFormation.java|movement/RandomDisasterPoint.java|movement/StationaryMovement.java|movement/RandomWaypoint.java|movement/ClusterMovement.java|interfaces/DistanceCapacityInterface.java|interfaces/InterferenceLimitedInterface.java|movement/ShortestPathMapBasedMovement2.java" kind="src" path="src"/>
+	<classpathentry kind="lib" path="/home/morishita/デスクトップ/THE ONE SIMU/src/lib/ECLA.jar"/>
+	<classpathentry kind="lib" path="/home/morishita/デスクトップ/THE ONE SIMU/src/lib/DTNConsoleConnection.jar"/>
+	<classpathentry kind="output" path="src"/>
+</classpath>
