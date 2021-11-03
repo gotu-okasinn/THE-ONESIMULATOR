@@ -5,6 +5,7 @@
 package core;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 
@@ -13,6 +14,7 @@ import movement.Path;
 import movement.map.MapNode;
 import routing.MessageRouter;
 import routing.util.RoutingInfo;
+import core.Coord;
 
 import java.util.Random;
 import movement.map.SimMap;
@@ -31,7 +33,14 @@ public class DTNHost implements Comparable<DTNHost> {
 	public Coord destination;	// 現在目指しているマップノードの座標（中継地点）
 	public Coord LastMapNode;  //ホストの最終目的地点（パスの最後の座標）
 	public Coord Beforedestination;//最後に通った分岐点
-	public Coord DisasterPoint=null;//ホストが持っている被災地の位置情報
+ 	public List<Coord> DisasterPoint2=new ArrayList<Coord>() {{add(LastMapNode);}};//ホストが持っている被災地の位置情報
+	public Coord DisasterPoint;
+	public Coord NecessaryOfBack=null; //前の分岐点に戻る必要があるかどうか
+	public boolean DateSendPermisstion=true;
+	public List<MapNode> PathNodeList=new ArrayList<>();  //被災者が現在進んでいるマップノードの列
+	public int PathCount=-1; //被災者がパスの何番目のマップノードまで進んだか確認する
+	public boolean MoveActive=true;
+	public MapNode BeforeBranchNode;
 	private MessageRouter router;
 	private MovementModel movement;
 	private Path path;
@@ -402,6 +411,154 @@ public class DTNHost implements Comparable<DTNHost> {
 		double distance;
 		double dx, dy;
 
+			
+		if (!isMovementActive() || SimClock.getTime() < this.nextTimeToMove) {
+			return;
+		}
+		
+		
+		//指定したマップノードへの最短経路パスを計算し、そこに向かうための最初のDestinationを決める。
+		if(host.NecessaryOfBack!=null) {
+		 if(!setNextWayBranchpoint(host.BeforeBranchNode)){
+		    return;
+		  }
+		}
+		//被災地点に到着していない被災者は最終目的地点を目指す
+		else if(this.destination == null) {
+			if (!setNextWaypoint()) {
+				return;
+			}
+		}
+		
+		
+		
+		/*①災害地変数が現在地なら戻る必要がある
+		if(host.DisasterPoint!=null) {
+			    if((int)host.location.getX()==(int)host.DisasterPoint.getX()) {
+			    	if((int)host.location.getY()==(int)host.DisasterPoint.getY()){
+			    		if(host.Beforedestination!=null) {
+			    		    host.NecessaryOfBack=host.Beforedestination;
+			    			 host.BeforeBranchNode=host.PathNodeList.get(PathCount);
+			    		}
+			    	}
+			    }
+		}*/
+	
+		
+		
+		//②災害地リストの中に現在地が入っていれば戻る必要がある
+		if(host.DisasterPoint2!=null) {
+		if(Coord.containsIntlocation(host.DisasterPoint2,host.location )) {
+		   if(host.Beforedestination!=null) {
+			   host.NecessaryOfBack=host.Beforedestination;
+  			 host.BeforeBranchNode=host.PathNodeList.get(PathCount);
+		   }
+		}
+		}
+		
+			
+			
+
+			possibleMovement = timeIncrement * speed;
+			distance = host.location.distance(host.destination);
+
+			while (possibleMovement >= distance) {
+				host.location.setLocation(host.destination); // snap to destination
+				possibleMovement -= distance;
+				if (!setNextWaypoint()) { // get a new waypoint
+					return; // no more waypoints left
+				}
+				distance = host.location.distance(host.destination);
+			}
+
+
+			// move towards the point for possibleMovement amount
+			dx = (possibleMovement/distance) * (host.destination.getX() -
+					host.location.getX());
+			dy = (possibleMovement/distance) * (host.destination.getY() -
+					host.location.getY());
+			host.location.translate(dx, dy);
+			
+			
+			
+		//前マップノードに到着した被災者は動けなくなる
+			if(host.BeforeBranchNode!=null) {
+					if(Coord.CompareIntEqual(host.location,host.BeforeBranchNode.location)) {
+					//host.NecessaryOfBack=null; //前のマップノードに戻ると
+				//重くなるので前のマップノードに戻ったノードも通信遮断
+					host.MoveActive=false;
+					//今通ったパスを行けなくして、新しいダイクストラ発動（実装したい）
+				}
+			}
+			
+			
+		//最終目的地点についた被災者はムーブメント＆通信ができなくなる
+			if(host.LastMapNode!=null) {
+				if(Coord.CompareIntEqual(host.location,host.LastMapNode)) {
+					 host.MoveActive=false;
+				}
+			}
+	
+			
+}
+			
+
+			
+		//}
+		
+	
+		
+		
+		
+		
+	
+	
+	
+	/*public void JustPointMove(double timeIncrement,DTNHost host) {
+		double possibleMovement;
+		double distance;
+		double dx, dy;
+
+		
+		
+		if (!isMovementActive() || SimClock.getTime() < this.nextTimeToMove) {
+			return;
+		}
+		/*if (this.destination == null) {
+			if (!setNextWaypoint()) {
+				return;
+			}
+		}
+
+		possibleMovement = timeIncrement * speed;
+		distance = host.location.distance(host.Beforedestination);
+
+		
+		while (possibleMovement >= distance) {
+			 host.location.setLocation(host.Beforedestination); // snap to destination
+			 possibleMovement -= distance;
+			 if (!setNextWaypoint()) { // get a new waypoint
+			   return; // no more waypoints left
+			 }
+			distance = host.location.distance(host.Beforedestination);
+		}
+
+		// move towards the point for possibleMovement amount
+		dx = (possibleMovement/distance) * (host.Beforedestination.getX() -
+				host.location.getX());
+		dy = (possibleMovement/distance) * (host.Beforedestination.getY() -
+				host.location.getY());
+		host.location.translate(dx, dy);
+		
+		host.NecessaryOfBack=true;
+	    }*/
+	
+	
+	/*public void BackMove(double timeIncrement,DTNHost host) {
+		double possibleMovement;
+		double distance;
+		double dx, dy;
+
 		
 		
 		if (!isMovementActive() || SimClock.getTime() < this.nextTimeToMove) {
@@ -414,21 +571,14 @@ public class DTNHost implements Comparable<DTNHost> {
 		}
 
 		possibleMovement = timeIncrement * speed;
+		distance = host.location.distance(host.Beforedestination);
 
-		if(host.DisasterPoint!=null) {
-			/*if(host.address==23) {
-			System.out.println("時間　"+SimClock.getTime()+""+host+"の現在地:"+host.location+"知ってる災害地"+host.DisasterPoint);
-			}*/
-			if((int)host.location.getX()==(int)host.DisasterPoint.getX()){
-		   if((int)host.location.getY()==(int)host.DisasterPoint.getY()) {
-			if(host.Beforedestination!=null) {
-			System.out.println(host);
-			distance = host.location.distance(host.Beforedestination);
-		 	 while (possibleMovement >= distance) {
+		
+		while (possibleMovement >= distance) {
 			 host.location.setLocation(host.Beforedestination); // snap to destination
 			 possibleMovement -= distance;
 			 if (!setNextWaypoint()) { // get a new waypoint
-				 return; // no more waypoints left
+			   return; // no more waypoints left
 			 }
 			distance = host.location.distance(host.Beforedestination);
 		}
@@ -439,35 +589,16 @@ public class DTNHost implements Comparable<DTNHost> {
 		dy = (possibleMovement/distance) * (host.Beforedestination.getY() -
 				host.location.getY());
 		host.location.translate(dx, dy);
-		return;
-			}
+		
+		if(host.location==host.Beforedestination) {
 			
 		}
-		}
-		}
+	    }*/
+			
 		
 		
 
-		distance = this.location.distance(this.destination);
-		while (possibleMovement >= distance) {
-			// node can move past its next destination
-			this.location.setLocation(this.destination); // snap to destination
-			possibleMovement -= distance;
-			if (!setNextWaypoint()) { // get a new waypoint
-				return; // no more waypoints left
-			}
-			distance = this.location.distance(this.destination);
-		}
-
-		// move towards the point for possibleMovement amount
-		dx = (possibleMovement/distance) * (this.destination.getX() -
-				this.location.getX());
-		dy = (possibleMovement/distance) * (this.destination.getY() -
-				this.location.getY());
-		this.location.translate(dx, dy);
 	
-	}
-
 	/**
 	 * Sets the next destination and speed to correspond the next waypoint
 	 * on the path.
@@ -475,10 +606,12 @@ public class DTNHost implements Comparable<DTNHost> {
 	 * should wait
 	 */
 	private boolean setNextWaypoint() {
-		
+	
+	
 	
 		if (path == null) {
 			path = movement.getPath();
+			this.PathNodeList=movement.getPathNodeList();
 			
 
 		}
@@ -497,8 +630,10 @@ public class DTNHost implements Comparable<DTNHost> {
 			if(this.location.getY()==this.destination.getY()) { 
 				
 				    this.Beforedestination=this.destination;
-				    //System.out.println("分岐点"+this.destination+"に到着、前分岐点情報を更新"+this.Beforedestination);
+				   // if(this.address==0)
+				   // System.out.println(this+"は分岐点"+this.destination+"に到着、前分岐点情報を更新"+this.Beforedestination);
 				    
+				    this.PathCount++;
 				}
 		}
 		}
@@ -512,6 +647,48 @@ public class DTNHost implements Comparable<DTNHost> {
 		
 		
 
+		if (this.movListeners != null) {
+			for (MovementListener l : this.movListeners) {
+				l.newDestination(this, this.destination, this.speed);
+			}
+		}
+
+		return true;
+	}
+	
+	
+	private boolean setNextWayBranchpoint(MapNode BranchNode) {
+		
+		
+			path = movement.getPathBranchPoint(BranchNode);
+			
+			
+		
+		//System.out.println("パス"+path);
+		/*if (path == null || !path.hasNext()) {
+			this.nextTimeToMove = movement.nextPathAvailable();
+			this.path = null;
+			return false;
+		}*/
+			
+		/*最後に通った目的地（分岐点）を保持する
+		if(this.destination!=null) {
+			
+			//１つ前の目的分岐点に到着したら、最後に通った分岐点を更新する
+			if(this.location.getX()==this.destination.getX()) {
+					if(this.location.getY()==this.destination.getY()) { 
+				
+				    this.Beforedestination=this.destination;
+				   // if(this.address==0)
+				   // System.out.println(this+"は分岐点"+this.destination+"に到着、前分岐点情報を更新"+this.Beforedestination);
+					}
+			}
+		}*/
+
+		this.destination = path.getNextWaypoint();
+		this.speed = path.getSpeed();
+		//System.out.println("目的地"+this.destination);
+		
 		if (this.movListeners != null) {
 			for (MovementListener l : this.movListeners) {
 				l.newDestination(this, this.destination, this.speed);

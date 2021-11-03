@@ -4,6 +4,7 @@
  */
 package core;
 
+import java.util.List;
 /**
  * Class to hold 2D coordinates and perform simple arithmetics and
  * transformations
@@ -157,5 +158,37 @@ public class Coord implements Cloneable, Comparable<Coord> {
 		else {
 			return 0;
 		}
+	}
+	
+	/**
+	 * 座標a,bが一致しているかを返すメソッド
+	 * @param a
+	 * @param b
+	 * @return aとｂのX,Y座標の整数部分を比較し、等しければtrue,そうでなければfalse
+	 */
+	public static boolean CompareIntEqual(Coord a,Coord b) {
+		
+		if((int)a.getX()==(int)b.getX()) {
+			if((int)a.getY()==(int)b.getY()){
+				return true;
+			}
+	}
+		return false;
+}
+	
+	public static boolean containsIntlocation(List<Coord>a,Coord b) {
+		int i=0;
+		for(a.get(i);a.get(i)==null;i++) {
+			if(a.get(i)==null)
+				break;
+			if((int)a.get(i).getX()==(int)b.getX()) {
+				if((int)a.get(i).getY()==(int)b.getY()) {
+					return true;
+				}
+			}
+		
+		}
+		
+		return false;	
 	}
 }

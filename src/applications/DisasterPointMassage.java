@@ -59,7 +59,7 @@ public class DisasterPointMassage extends Application {
 
 	// Private vars
 	private double	lastPing = 0;
-	private double	interval = 50;
+	private double	interval = 10;
 	private boolean passive = false;
 	private int		seed = 9;
 	private int		destMin=0;
@@ -136,8 +136,12 @@ public class DisasterPointMassage extends Application {
 
 	//受け取ったデータの中にある被災地の位置情報をホストは取得する
 		Coord type = (Coord)msg.getProperty("DisasterCoord");
-		host.DisasterPoint=type;
-		System.out.print(type);
+		
+		//host.DisasterPoint=type;
+		host.DisasterPoint2.add(type);
+		
+		//  System.out.println(host+"は"+type+"を取得");
+	
 		
 	//どこからどんなデータを受け取ったか通知
 		//System.out.print("目的ノード:"+msg.getTo()+" 受信ノード:"+host+
@@ -178,7 +182,7 @@ public class DisasterPointMassage extends Application {
 		destaddr = destMin + rng.nextInt(destMax - destMin);
 		World w = SimScenario.getInstance().getWorld();
 
-		return w.getNodeByAddress(destaddr);
+		return w.getNodeByAddress(0);
 	}
 
 	@Override
@@ -196,13 +200,22 @@ public class DisasterPointMassage extends Application {
 		if (this.passive) return;
 
 		 double curTime = SimClock.getTime();
-		if (curTime - this.lastPing >= this.interval) {
+		/*if (curTime - this.lastPing >= this.interval) {
 				//データを送信準備のメソッド
 				this.DataSend(host);
 
 			// リスナに知らせる
 			super.sendEventToListeners("SentPing", null, host);
-			this.lastPing = curTime;
+			this.lastPing = curTime;*/
+		 
+			if (curTime - this.lastPing >= this.interval&&host.DateSendPermisstion==true) {
+					//データを送信準備のメソッド
+					this.DataSend(host);
+
+				// リスナに知らせる
+				super.sendEventToListeners("SentPing", null, host);
+				this.lastPing = curTime;
+				host.DateSendPermisstion=false;
 		}
 	}
 
@@ -211,7 +224,7 @@ public void DataSend(DTNHost host) {
 
   //ソースホストを被災地ノードに限定する
 		if(host.address>=300){
-				Message m = new Message(host,randomHost(), "disaster"/*+host.address*/,getPingSize());
+				Message m = new Message(host,randomHost(), "disaster"+host.address,getPingSize());
 				m.addProperty("DisasterCoord", host.location);;
 				m.setAppID(APP_ID);
 		  

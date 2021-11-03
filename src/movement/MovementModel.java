@@ -5,7 +5,7 @@
 package movement;
 
 import java.util.Random;
-
+import java.util.List;
 import util.ActivenessHandler;
 
 import core.Coord;
@@ -211,6 +211,12 @@ public abstract class MovementModel {
 	
 	//最終目的マップノードを返す
 	public abstract MapNode getlastNode();
+	
+	//前の分岐点戻るためのパスを返す
+	public abstract Path getPathBranchPoint(MapNode BranchNode);
+	
+	
+	public abstract List<MapNode> getPathNodeList();
 	/**
 	 * Returns a new initial placement for a node
 	 * @return The initial coordinates for a node

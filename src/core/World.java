@@ -215,10 +215,34 @@ public class World {
 	private void moveHosts(double timeIncrement) {
 		for (int i=0,n = hosts.size(); i<n; i++) {
 			DTNHost host = hosts.get(i);
-			//host.move(timeIncrement);
-			//ここで分岐させるのもありかもしれぬ
-			host.move(timeIncrement,host);
-		}		
+			
+			
+			
+			//if(host.DisasterPoint!=null) {//前の分岐点がある＆災害地情報をしっている場合（逆　災害地をしらない）
+		   // if(host.DisasterPoint!=null&&(int)host.location.getX()==(int)host.DisasterPoint.getX()) {
+				  	//if((int)host.location.getY()==(int)host.DisasterPoint.getY()) {
+						
+						//	if(host.Beforedestination!=null) {
+						//		host.JustPointMove(timeIncrement,host);
+								
+							//}
+				//else {
+			if(host.MoveActive!=false) {
+			host.move(timeIncrement, host);
+			}
+								
+						//}
+						//}
+				
+					//}	
+				//災害地点から前の目的地点に戻る
+				//else if(host.NecessaryOfBack==true) {
+				//		host.BackMove(timeIncrement,host);
+						
+					//	}
+			//その他		
+	
+	}
 	}
 
 	/**

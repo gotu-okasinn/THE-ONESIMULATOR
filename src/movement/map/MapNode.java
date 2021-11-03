@@ -20,8 +20,8 @@ public class MapNode implements Comparable<MapNode> {
 	/** Biggest valid type of a node: {@value} */
 	public static final int MAX_TYPE = 31;
 	
-	
-	private Coord location;
+	//publicに変更
+	public Coord location;
 	private Vector<MapNode> neighbors;
 	// bit mask of map node's types or 0 if no type's are defined
 	private int type;

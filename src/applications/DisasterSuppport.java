@@ -31,6 +31,7 @@ import applications.DataManager;
  * answer to pings it receives. When the application receives a ping it sends
  * a pong message in response.
  *
+ *
  * The corresponding <code>PingAppReporter</code> class can be used to record
  * information about the application behavior.
  *

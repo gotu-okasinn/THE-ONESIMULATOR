@@ -46,6 +46,8 @@ public class MapBasedMovement extends MovementModel implements SwitchableMovemen
 	/** map file -setting id ({@value})*/
 	public static final String FILE_S = "mapFile";
 	
+	public static Path a;
+	
 	/** 
 	 * Per node group setting for selecting map node types that are OK for
 	 * this node group to traverse trough. Value must be a comma separated list
@@ -432,4 +434,14 @@ public class MapBasedMovement extends MovementModel implements SwitchableMovemen
 	public  MapNode getlastNode() {
 		return lastMapNode;
 	}
+
+public Path getPathBranchPoint(MapNode BranchNode) {
+	return null;
+}
+
+@Override
+public List<MapNode> getPathNodeList() {
+	// TODO 自動生成されたメソッド・スタブ
+	return null;
+}
 }

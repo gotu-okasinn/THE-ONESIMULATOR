@@ -6,7 +6,6 @@ package core;
 
 import java.util.List;
 
-
 /**
  * <p>
  * Base class for applications. Nodes that have an application running will

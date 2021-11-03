@@ -127,6 +127,40 @@ public class PointsOfInterest {
 		
 		return node;
 	}
+	
+	
+	
+	public MapNode selectDestinationBranchPoint(MapNode Branchnode) {
+		
+		//rngをMovemetModelの共通のランダム関数を使うことにする
+			double random = MovementModel.rng.nextDouble();
+			double acc = 0;
+			
+			for (Tuple<Double, Integer> t : poiProbs) {
+				acc += t.getKey();
+				
+				if (acc > random) {
+					// get the lucky POI group
+					List<MapNode> pois = poiLists.get(t.getValue());
+					// return a random POI from that group
+					return pois.get(rng.nextInt(pois.size()));
+				}
+			}
+			
+			// random was bigger than sum of probs -> return a random map node
+			// that is still OK (if OK node types are defined)
+			//List<MapNode> allNodes = map.getNodes();
+			
+			MapNode node=null;
+			
+			do {
+				//node = allNodes.get(rng.nextInt(allNodes.size())); 
+				//node = allNodes.get(DEST/*前の分岐点ノード*/);
+				
+			} while (okMapNodeTypes != null && !node.isType(okMapNodeTypes));
+			
+			return node;
+		}
 
 
  

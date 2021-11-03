@@ -236,10 +236,14 @@ abstract public class NetworkInterface implements ModuleCommunicationListener {
 
 		//ホストの現在地が目的地と一致していれば、ネットワークインターフェースをオフにする
 	
-		if(host.location.getX()==host.LastMapNode.getX()) {
+		/*if(host.location.getX()==host.LastMapNode.getX()) {
 			if(host.location.getY()==host.LastMapNode.getY()){
 			return false;
 			}
+		}*/
+		if(host.MoveActive==false)
+		{
+			return false;
 		}
 			if (ah == null) {
 			return true; /* no handler: always active */
