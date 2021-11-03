@@ -17,6 +17,7 @@ import routing.util.RoutingInfo;
 import java.util.Random;
 import movement.map.SimMap;
 import movement.MapBasedMovement;
+import core.SimClock;
 
 
 /**
@@ -26,9 +27,11 @@ public class DTNHost implements Comparable<DTNHost> {
 	private static int nextAddress = 0;
 	public int address;
 //変更済み　private→public　
-	public Coord location; 	// where is the host
-	public Coord destination;	// where is it going
-   public Coord LastMapNode;  //Last destination
+	public Coord location; 	// ホストの現在地
+	public Coord destination;	// 現在目指しているマップノードの座標（中継地点）
+	public Coord LastMapNode;  //ホストの最終目的地点（パスの最後の座標）
+	public Coord Beforedestination;//最後に通った分岐点
+	public Coord DisasterPoint=null;//ホストが持っている被災地の位置情報
 	private MessageRouter router;
 	private MovementModel movement;
 	private Path path;
@@ -39,7 +42,8 @@ public class DTNHost implements Comparable<DTNHost> {
 	private List<MovementListener> movListeners;
 	private List<NetworkInterface> net;
 	private ModuleCommunicationBus comBus;
-
+	
+	
 	
 	
 
@@ -350,7 +354,7 @@ public class DTNHost implements Comparable<DTNHost> {
 	 */
 	public void update(boolean simulateConnections,DTNHost host) {
 		
-		
+		//System.out.println(this.destination);
 		if (!isRadioActive()) {
 			// Make sure inactive nodes don't have connections
 			tearDownAllConnections();
@@ -362,6 +366,7 @@ public class DTNHost implements Comparable<DTNHost> {
 				i.update();
 			}
 		}
+		
 		this.router.update();
 	}
 
@@ -391,11 +396,14 @@ public class DTNHost implements Comparable<DTNHost> {
 	 * not time to move yet
 	 * @param timeIncrement How long time the node moves
 	 */
-	public void move(double timeIncrement) {
+	//public void move(double timeIncrement) {
+	public void move(double timeIncrement,DTNHost host) {
 		double possibleMovement;
 		double distance;
 		double dx, dy;
 
+		
+		
 		if (!isMovementActive() || SimClock.getTime() < this.nextTimeToMove) {
 			return;
 		}
@@ -406,8 +414,41 @@ public class DTNHost implements Comparable<DTNHost> {
 		}
 
 		possibleMovement = timeIncrement * speed;
-		distance = this.location.distance(this.destination);
 
+		if(host.DisasterPoint!=null) {
+			/*if(host.address==23) {
+			System.out.println("時間　"+SimClock.getTime()+""+host+"の現在地:"+host.location+"知ってる災害地"+host.DisasterPoint);
+			}*/
+			if((int)host.location.getX()==(int)host.DisasterPoint.getX()){
+		   if((int)host.location.getY()==(int)host.DisasterPoint.getY()) {
+			if(host.Beforedestination!=null) {
+			System.out.println(host);
+			distance = host.location.distance(host.Beforedestination);
+		 	 while (possibleMovement >= distance) {
+			 host.location.setLocation(host.Beforedestination); // snap to destination
+			 possibleMovement -= distance;
+			 if (!setNextWaypoint()) { // get a new waypoint
+				 return; // no more waypoints left
+			 }
+			distance = host.location.distance(host.Beforedestination);
+		}
+
+		// move towards the point for possibleMovement amount
+		dx = (possibleMovement/distance) * (host.Beforedestination.getX() -
+				host.location.getX());
+		dy = (possibleMovement/distance) * (host.Beforedestination.getY() -
+				host.location.getY());
+		host.location.translate(dx, dy);
+		return;
+			}
+			
+		}
+		}
+		}
+		
+		
+
+		distance = this.location.distance(this.destination);
 		while (possibleMovement >= distance) {
 			// node can move past its next destination
 			this.location.setLocation(this.destination); // snap to destination
@@ -424,6 +465,7 @@ public class DTNHost implements Comparable<DTNHost> {
 		dy = (possibleMovement/distance) * (this.destination.getY() -
 				this.location.getY());
 		this.location.translate(dx, dy);
+	
 	}
 
 	/**
@@ -433,18 +475,42 @@ public class DTNHost implements Comparable<DTNHost> {
 	 * should wait
 	 */
 	private boolean setNextWaypoint() {
+		
+	
 		if (path == null) {
 			path = movement.getPath();
-		}
+			
 
+		}
+		
+		//System.out.println("パス"+path);
 		if (path == null || !path.hasNext()) {
 			this.nextTimeToMove = movement.nextPathAvailable();
 			this.path = null;
 			return false;
 		}
+		//最後に通った目的地（分岐点）を保持する
+		if(this.destination!=null) {
+			
+			//１つ前の目的分岐点に到着したら、最後に通った分岐点を更新する
+			if(this.location.getX()==this.destination.getX()) {
+			if(this.location.getY()==this.destination.getY()) { 
+				
+				    this.Beforedestination=this.destination;
+				    //System.out.println("分岐点"+this.destination+"に到着、前分岐点情報を更新"+this.Beforedestination);
+				    
+				}
+		}
+		}
 
 		this.destination = path.getNextWaypoint();
 		this.speed = path.getSpeed();
+		//System.out.println("目的地"+this.destination);
+		
+		
+		
+		
+		
 
 		if (this.movListeners != null) {
 			for (MovementListener l : this.movListeners) {

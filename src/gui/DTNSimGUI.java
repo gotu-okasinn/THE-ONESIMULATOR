@@ -130,7 +130,7 @@ public class DTNSimGUI extends DTNSimUI {
 			//シミュレーションTIME　10秒おきにそれぞれのノードの座標位置を表示
 		
 				if((float)simTime%(int)10==0) {
-					for(int i=0;i<=125;i++){						//ノードの数だけループ
+					for(int i=0;i<=1;i++){						//ノードの数だけループ
 						World w=SimScenario.getInstance().getWorld();
 						//System.out.println("時間 :"+(float)simTime+w.getNodeByAddress(i)+"の座標"+w.getNodeByAddress(i).location);	
 			 	//host.coorlds[]=host.locaiton 

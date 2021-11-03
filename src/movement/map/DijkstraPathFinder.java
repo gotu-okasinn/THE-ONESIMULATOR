@@ -83,7 +83,7 @@ public class DijkstraPathFinder {
 		initWith(from);
 		MapNode node = null;
 		
-		// いつも最短距離を持つノードを選択する
+		// 毎回最短距離を持つノードを選択する
 		while ((node = unvisited.poll()) != null) {
 			if (node == to) {
 				break; // we found the destination -> no need to search further
@@ -121,7 +121,7 @@ public class DijkstraPathFinder {
 			}
 			
 			if (okMapNodes != null && !n.isType(okMapNodes)) {
-				continue; // OKノードすなわち通ることのできないノードはスキップしない
+				continue; // OKノードすなわち通ることのできないノードはスキップ
 			}
 			
 			// パスのソースノードからnノードのまでの距離

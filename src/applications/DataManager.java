@@ -53,7 +53,7 @@ public class DataManager {
 	    } 
 	   
 	   share=(double)MsgHostData.size()*(double)100/(double)(PingApplication.destMax);
-	   System.out.println("　共有率:"+share+"%");
+	  // System.out.println("　共有率:"+share+"%");
 	   
 		return msg;
 		

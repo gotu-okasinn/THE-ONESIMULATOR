@@ -46,6 +46,8 @@ public abstract class MovementModel {
 	/** movement models' rng seed -setting id ({@value})*/
 	public static final String RNG_SEED = "rngSeed";
 	
+	
+	
 	/** common rng for all movement models in the simulation */
 	
 	//ランダム関数rngをpublicに変更

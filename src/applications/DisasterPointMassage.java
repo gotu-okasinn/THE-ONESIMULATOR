@@ -70,8 +70,7 @@ public class DisasterPointMassage extends Application {
 	private int i=0;
 	//private List<String> sharenode =new ArrayList<String>();
 	private List<String> data =new ArrayList<>();
-	//ホストが持っている被災地の位置情報
-	private Coord DisasterPoint=null;
+
 
 	//private double share;
 
@@ -137,7 +136,7 @@ public class DisasterPointMassage extends Application {
 
 	//受け取ったデータの中にある被災地の位置情報をホストは取得する
 		Coord type = (Coord)msg.getProperty("DisasterCoord");
-		this.DisasterPoint=type;
+		host.DisasterPoint=type;
 		System.out.print(type);
 		
 	//どこからどんなデータを受け取ったか通知
@@ -145,14 +144,7 @@ public class DisasterPointMassage extends Application {
 				// "  時間:"+SimClock.getIntTime());
 
 		DataManager.Management(host,msg);
-
-	//被災データ所持ノードの操作
-		//通信相手の予測ベクトルが被災地地点に向かうベクトルならデータ転送
-		//それ以外なら転送なし
 		
-		
-    //被災データ非所持ノードの場合
-		//あら不思議、被災データ所持ノードに変身！
 		
 		if (type==null)
 				return msg; // Not a ping/pong message

@@ -11,6 +11,8 @@ import movement.map.MapNode;
 import movement.map.PointsOfInterest;
 import core.Settings;
 import java.util.List;
+
+import core.Coord;
 /**
  * Map based movement model that uses Dijkstra's algorithm to find shortest
  * paths between two random map nodes and Points Of Interest
@@ -22,6 +24,8 @@ public class ShortestPathMapBasedMovement extends MapBasedMovement implements
 
 	/** Points Of Interest handler */
 	private PointsOfInterest pois;
+	
+
 	
 	/**
 	 * Creates a new movement model based on a Settings object's settings.
@@ -53,12 +57,15 @@ public class ShortestPathMapBasedMovement extends MapBasedMovement implements
 		MapNode to = pois.selectDestination();
 		
 		List<MapNode> nodePath = pathFinder.getShortestPath(lastMapNode, to);
-		
+
 		// this assertion should never fire if the map is checked in read phase
 		assert nodePath.size() > 0 : "No path from " + lastMapNode + " to " +
 			to + ". The simulation map isn't fully connected";
 				
 		for (MapNode node : nodePath) { // create a Path from the shortest path
+			//System.out.println(nodePath);
+			
+			//今向かっているマップノード→これをNodePathから削除したい
 			p.addWaypoint(node.getLocation());
 		}
 		
@@ -67,7 +74,14 @@ public class ShortestPathMapBasedMovement extends MapBasedMovement implements
 		return p;
 		
 		//ここに他のパスを選択するための条件分岐を入れる
-	}	
+	}
+	
+	/*public Path getPath2(１つ前の分岐点のマップノード) {
+		Path p = new Path(generateSpeed());
+		p.addWaypoint(１つ前の分岐点のマップノード);
+		return p;
+	}*/
+	
 	
 	//宛先ノードを返す
 	public MapNode getlastNode() {
