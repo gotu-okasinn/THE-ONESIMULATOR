@@ -16,6 +16,7 @@ import java.util.ArrayList;
  * @param host & msg
  * @return msg
  */
+
 public class DataManager {
 	
 	public static List<String> MsgHostData=new ArrayList<String>();//受信ホストリスト
